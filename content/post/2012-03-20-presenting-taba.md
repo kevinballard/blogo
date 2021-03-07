@@ -1,7 +1,7 @@
 ---
 title: 'Taba: Low Latency Event Aggregation'
 date: 2012-03-20
-draft: true
+draft: false
 ---
 *This article was originally published to the TellApart Engineering Blog on 2012–03–20*
 
@@ -33,9 +33,9 @@ When the Taba service is queried, States are converted into Projections and/or A
 
 Applications generate Events by embedding a Taba Client. The Client briefly buffers Events and posts them to a Taba Agent over an HTTP based protocol. An Agent receives Events from multiple Clients (usually on the same machine) briefly buffers them, and posts them to the Taba Server using the same protocol. The Client + Agent scheme allows for a very simple and resource-light Client, putting more complex buffering and durability functions in a separate process. The Agent also helps performance by batching requests to the Server.
 
-The Server is where the real magic happens. Like [TellApart’s TAFE server](https://t.umblr.com/redirect?z=http%3A%2F%2Ftellapart.com%2Fserving-up-a-storm&t=ZDZlZWNlNTU4MmJjZDVlODJiNGQ3MDVlZmY3YWQ3YmVkYWM1MDE3MSxpcXFxeURZdA%3D%3D&b=t%3AtSukOFSuQs_w3dGZQMwq8Q&p=http%3A%2F%2Ftellaparteng.tumblr.com%2Fpost%2F49814523799%2Ftaba-low-latency-event-aggregation&m=1), it’s a distributed Python service sitting behind an Nginx reverse proxy, and uses [gevent](https://t.umblr.com/redirect?z=http%3A%2F%2Fwww.gevent.org%2F&t=MGY0Y2IxNTFlMjVjMjg1YWQ2N2ZhY2JmZDUzNTBmMDkwOGFhZDNiYyxpcXFxeURZdA%3D%3D&b=t%3AtSukOFSuQs_w3dGZQMwq8Q&p=http%3A%2F%2Ftellaparteng.tumblr.com%2Fpost%2F49814523799%2Ftaba-low-latency-event-aggregation&m=1) for simple and fast co-operative concurrency. The Server itself is stateless, meaning you can launch as many as needed; the Agents will distribute requests across Servers. The Server receives Events and invokes the appropriate Handler to fold them into States, or generate Projections and Aggregates. A State object is maintained for each Client and Tab combination, so that the status of any Client can be queried.
+The Server is where the real magic happens. Like [TellApart’s TAFE server](https://tellaparteng.tumblr.com/post/49818501891/tellapart-frontend), it’s a distributed Python service sitting behind an Nginx reverse proxy, and uses [gevent](http://www.gevent.org) for simple and fast co-operative concurrency. The Server itself is stateless, meaning you can launch as many as needed; the Agents will distribute requests across Servers. The Server receives Events and invokes the appropriate Handler to fold them into States, or generate Projections and Aggregates. A State object is maintained for each Client and Tab combination, so that the status of any Client can be queried.
 
-We use [Redis](https://t.umblr.com/redirect?z=http%3A%2F%2Fredis.io%2F&t=NzI2ZDJlZDEyMGMzNTUxYTNmYmVhYTg3YzdkZmE1ZjdlMjdlYTYyNCxpcXFxeURZdA%3D%3D&b=t%3AtSukOFSuQs_w3dGZQMwq8Q&p=http%3A%2F%2Ftellaparteng.tumblr.com%2Fpost%2F49814523799%2Ftaba-low-latency-event-aggregation&m=1) for the database, but with our own transparent sharding layer on top to overcome single process limitations. Sharding is based on virtual buckets, and supports a subset of Redis data-types, and transactions/locking. Like the Server, as many Redis processes as needed can be run, and re-sharding without downtime is possible.
+We use [Redis](http://redis.io) for the database, but with our own transparent sharding layer on top to overcome single process limitations. Sharding is based on virtual buckets, and supports a subset of Redis data-types, and transactions/locking. Like the Server, as many Redis processes as needed can be run, and re-sharding without downtime is possible.
 
 **In Production**
 

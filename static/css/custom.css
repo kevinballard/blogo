@@ -1,0 +1,10 @@
+
+figcaption {
+  text-align: center;
+  font-style: italic;
+}
+
+.post img {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}

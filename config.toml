@@ -1,10 +1,17 @@
-baseURL = "http://example.org/"
+baseURL = "http://coqu.io/"
 languageCode = "en-us"
-title = "My New Hugo Site"
+title = "Kevin Ballard"
 author = "Kevin Ballard"
 
 theme = "arabica"
 paginate = 10
+
+[params]
+custom_css = ["css/custom.css"]
+
+[markup]
+[markup.highlight]
+style = "monokailight"
 
 [deployment]
 
